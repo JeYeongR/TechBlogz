@@ -65,12 +65,7 @@ export async function collectAllFeeds() {
     try {
       results.push(await collectFeed(feed));
     } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : typeof err === "object" && err !== null && "message" in err
-            ? String((err as { message: unknown }).message)
-            : String(err);
+      const message = err instanceof Error ? err.message : String(err);
       results.push({ feedId: feed.id, itemsSeen: 0, inserted: 0, error: message });
     }
   }

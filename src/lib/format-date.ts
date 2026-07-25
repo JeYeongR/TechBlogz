@@ -6,5 +6,5 @@ export function formatDate(iso: string): string {
 }
 
 export function formatDateTime(iso: string): string {
-  return new Date(iso).toLocaleString("ko-KR", { timeZone: TIME_ZONE });
+  return new Date(iso).toLocaleString("ko-KR", { timeZone: TIME_ZONE, hour12: false });
 }

@@ -5,8 +5,6 @@ import { feeds } from "@/lib/feeds";
 import { formatDate } from "@/lib/format-date";
 import type { Article } from "@/lib/types";
 
-const feedById = new Map(feeds.map((feed) => [feed.id, feed]));
-
 export function ArticleCard({
   article,
   layout = "list",
@@ -17,7 +15,7 @@ export function ArticleCard({
   onRead: (id: string) => void;
 }) {
   const isGrid = layout === "grid";
-  const feed = feedById.get(article.feed_id);
+  const feed = feeds.find((f) => f.id === article.feed_id);
   const icon = faviconUrl(feed?.logo ?? feed?.url ?? article.link);
 
   return (
