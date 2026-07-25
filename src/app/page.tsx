@@ -14,7 +14,7 @@ export default async function Home() {
   return (
     <div className="mx-auto flex max-w-[960px] flex-col gap-8 px-6 py-10">
       <HomeShell
-        title="ArticleSift"
+        title="TechBlogz"
         lastCollectedAt={lastCollectedAt}
         feeds={feeds}
         initialArticles={articles}

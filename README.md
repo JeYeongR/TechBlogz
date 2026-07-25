@@ -1,21 +1,22 @@
-## ArticleSift — MVP1
+## TechBlogz — MVP1
 
 필터링 기능이 있는 개인용 RSS 리더. 스펙은 [rss-reader-prd.md](./rss-reader-prd.md) 참고.
 
-MVP1은 DB로 로컬 SQLite(`data/articlesift.db`, better-sqlite3)를 씀 — 별도 서비스 가입 없이 바로 실행. MVP2에서 Supabase 등 호스팅 DB로 옮길 예정 (Vercel 서버리스는 디스크가 영구적이지 않아 SQLite 파일이 배포 환경에서 유지되지 않음).
+DB는 Supabase(Postgres)를 씀 — Vercel 서버리스 배포를 전제로 함.
 
 ### 설정
 
-1. `.env.local` 생성 (`.env.example` 참고):
+1. Supabase 프로젝트 생성 후 `supabase/migrations/0001_init.sql`을 SQL Editor에서 실행
+2. `.env.local` 생성 (`.env.example` 참고):
    - `CRON_SECRET`: 임의 문자열, GitHub Actions 시크릿(`CRON_SECRET`)과 동일하게 설정
-   - `SQLITE_PATH`: 선택. 기본값은 `data/articlesift.db`
-2. `npm install` → `npm run dev` (첫 실행 시 `data/` 디렉터리와 sqlite 파일 자동 생성)
-3. `feeds.json`에 피드 추가/삭제 (URL이 유효한지는 `npm run validate:feeds`로 확인, 빌드 시 `prebuild`로 자동 실행됨)
+   - `SUPABASE_URL`: Supabase 프로젝트 설정 → API → Project URL
+   - `SUPABASE_SERVICE_ROLE_KEY`: Supabase 프로젝트 설정 → API → service_role 키 (서버 전용, 클라이언트 노출 금지)
+3. `npm install` → `npm run dev`
+4. `feeds.json`에 피드 추가/삭제 (URL이 유효한지는 `npm run validate:feeds`로 확인, 빌드 시 `prebuild`로 자동 실행됨)
 
 ### 배포
 
-- SQLite 파일 기반이라 로컬/단일 서버 환경(예: VM, 상시 실행 컨테이너)에 그대로 배포 가능
-- Vercel 등 서버리스에 배포하려면 DB를 호스팅형(Supabase 등)으로 교체 필요 — MVP2 작업
+- Vercel에 연결, 환경변수(`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`) 등록 후 배포
 - GitHub Actions(`.github/workflows/collect.yml`)가 15분 간격으로 `/api/cron/collect`를 호출해 신규 글 수집
   - 리포지토리 시크릿에 `APP_URL`(배포 URL), `CRON_SECRET` 등록 필요
 

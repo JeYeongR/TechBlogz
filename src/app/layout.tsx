@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ArticleSift",
+  title: "TechBlogz",
   description: "필터링 기능이 있는 개인용 RSS 리더",
 };
 

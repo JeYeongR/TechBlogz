@@ -2,7 +2,7 @@
 
 ## 현재 상태
 
-- DB: 로컬 SQLite(`data/articlesift.db`, better-sqlite3) — Vercel 서버리스는 디스크가 영구적이지 않아 **그대로는 배포 불가**
+- DB: 로컬 SQLite(`data/techblogz.db`, better-sqlite3) — Vercel 서버리스는 디스크가 영구적이지 않아 **그대로는 배포 불가**
 - 수집: `/api/cron/collect` 라우트, `CRON_SECRET` 헤더로 보호
 - GitHub Actions 워크플로우([.github/workflows/collect.yml](.github/workflows/collect.yml))는 이미 있음 — `APP_URL`, `CRON_SECRET` 시크릿만 등록하면 됨
 

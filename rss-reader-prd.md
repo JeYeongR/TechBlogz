@@ -1,4 +1,4 @@
-# PRD: ArticleSift (필터링 기능이 있는 개인용 RSS 리더)
+# PRD: TechBlogz (필터링 기능이 있는 개인용 RSS 리더)
 
 ## 1. 배경 및 문제 정의
 

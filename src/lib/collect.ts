@@ -1,7 +1,6 @@
-import { randomUUID } from "node:crypto";
 import Parser from "rss-parser";
 import { feeds } from "./feeds";
-import { getDb } from "./db";
+import { getSupabase } from "./supabase";
 
 type FeedItem = Parser.Item & {
   enclosure?: { url?: string };
@@ -9,7 +8,7 @@ type FeedItem = Parser.Item & {
 };
 
 const parser = new Parser<Record<string, unknown>, FeedItem>({
-  headers: { "User-Agent": "Mozilla/5.0 (compatible; ArticleSift/1.0)", Accept: "*/*" },
+  headers: { "User-Agent": "Mozilla/5.0 (compatible; TechBlogz/1.0)", Accept: "*/*" },
 });
 
 function extractThumbnail(item: FeedItem): string | null {
@@ -22,24 +21,17 @@ function stripHtml(text: string): string {
 }
 
 export async function collectFeed(feed: (typeof feeds)[number]) {
-  const db = getDb();
+  const supabase = getSupabase();
   const parsed = await parser.parseURL(feed.url);
 
-  const insert = db.prepare(`
-    insert or ignore into articles
-      (id, feed_id, feed_name, title, link, guid, summary, thumbnail_url, published_at)
-    values (@id, @feed_id, @feed_name, @title, @link, @guid, @summary, @thumbnail_url, @published_at)
-  `);
-
-  let inserted = 0;
+  const rows = [];
   let itemsSeen = 0;
   for (const item of parsed.items) {
     if (!item.link) continue;
     itemsSeen++;
     const title = item.title ?? "(제목 없음)";
     const summary = stripHtml(item.contentSnippet ?? item.summary ?? "").slice(0, 500);
-    const result = insert.run({
-      id: randomUUID(),
+    rows.push({
       feed_id: feed.id,
       feed_name: feed.name,
       title,
@@ -49,12 +41,22 @@ export async function collectFeed(feed: (typeof feeds)[number]) {
       thumbnail_url: extractThumbnail(item),
       published_at: item.isoDate ?? item.pubDate ?? new Date().toISOString(),
     });
-    if (result.changes > 0) inserted++;
   }
 
-  db.prepare(
-    "insert into feed_state (feed_id, last_fetched_at) values (?, ?) on conflict(feed_id) do update set last_fetched_at = excluded.last_fetched_at"
-  ).run(feed.id, new Date().toISOString());
+  let inserted = 0;
+  if (rows.length > 0) {
+    const { data, error } = await supabase
+      .from("articles")
+      .upsert(rows, { onConflict: "link", ignoreDuplicates: true })
+      .select("id");
+    if (error) throw error;
+    inserted = data?.length ?? 0;
+  }
+
+  const { error: stateError } = await supabase
+    .from("feed_state")
+    .upsert({ feed_id: feed.id, last_fetched_at: new Date().toISOString() }, { onConflict: "feed_id" });
+  if (stateError) throw stateError;
 
   return { feedId: feed.id, itemsSeen, inserted };
 }
