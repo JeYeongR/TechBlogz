@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
 declare global {
-  var __techblogzSupabase: ReturnType<typeof createClient> | undefined;
+  var __techblogzSupabase: ReturnType<typeof createSupabaseClient> | undefined;
 }
 
 function createSupabaseClient() {
@@ -14,8 +14,7 @@ function createSupabaseClient() {
 }
 
 export function getSupabase() {
-  if (!global.__techblogzSupabase) {
-    global.__techblogzSupabase = createSupabaseClient();
-  }
-  return global.__techblogzSupabase;
+  const client = global.__techblogzSupabase ?? createSupabaseClient();
+  global.__techblogzSupabase = client;
+  return client;
 }
