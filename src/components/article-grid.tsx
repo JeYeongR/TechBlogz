@@ -23,6 +23,7 @@ export function ArticleGrid({
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [selectedFeedId, setSelectedFeedId] = useState<string | undefined>(undefined);
   const [isPending, startTransition] = useTransition();
+  const [isFilterPending, startFilterTransition] = useTransition();
 
   function handleRead(id: string) {
     setArticles((prev) => prev.map((a) => (a.id === id ? { ...a, is_read: true } : a)));
@@ -46,7 +47,7 @@ export function ArticleGrid({
 
   function handleSelectFeed(feedId: string | undefined) {
     setSelectedFeedId(feedId);
-    startTransition(async () => {
+    startFilterTransition(async () => {
       const { articles: first, hasMore: firstHasMore } = await loadMoreArticles(0, feedId);
       setArticles(first);
       setPage(0);
@@ -60,8 +61,9 @@ export function ArticleGrid({
         <button
           type="button"
           onClick={() => handleSelectFeed(undefined)}
+          disabled={isFilterPending}
           className={
-            "rounded-full border px-3 py-1 text-sm" +
+            "rounded-full border px-3 py-1 text-sm disabled:opacity-50" +
             (selectedFeedId === undefined ? " bg-foreground text-background" : "")
           }
         >
@@ -72,8 +74,9 @@ export function ArticleGrid({
             key={feed.id}
             type="button"
             onClick={() => handleSelectFeed(feed.id)}
+            disabled={isFilterPending}
             className={
-              "flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm" +
+              "flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm disabled:opacity-50" +
               (selectedFeedId === feed.id ? " bg-foreground text-background" : "")
             }
           >
@@ -86,7 +89,14 @@ export function ArticleGrid({
       {articles.length === 0 ? (
         <p className="text-muted-foreground">표시할 글이 없습니다.</p>
       ) : (
-        <div className={view === "grid" ? "grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4" : "flex flex-col"}>
+        <div
+          className={
+            (view === "grid"
+              ? "grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4"
+              : "flex flex-col") +
+            (isFilterPending ? " opacity-50 transition-opacity" : " transition-opacity")
+          }
+        >
           {articles.map((article) => (
             <ArticleCard key={article.id} article={article} layout={view} onRead={handleRead} />
           ))}
