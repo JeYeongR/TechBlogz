@@ -1,6 +1,6 @@
 ## TechBlogz — MVP1
 
-필터링 기능이 있는 개인용 RSS 리더. 스펙은 [rss-reader-prd.md](./rss-reader-prd.md) 참고.
+필터링 기능이 있는 개인용 RSS 리더. 스펙은 [docs/rss-reader-prd.md](./docs/rss-reader-prd.md) 참고.
 
 DB는 Supabase(Postgres)를 씀 — Vercel 서버리스 배포를 전제로 함.
 
