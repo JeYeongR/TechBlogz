@@ -1,0 +1,15 @@
+[
+  { "id": "oliveyoung-tech", "name": "올리브영", "url": "https://oliveyoung.tech/rss.xml" },
+  { "id": "woowahan-tech", "name": "우아한형제들", "url": "https://techblog.woowahan.com/feed/" },
+  { "id": "toss-tech", "name": "토스", "url": "https://toss.tech/rss.xml" },
+  { "id": "kakao-tech", "name": "카카오", "url": "https://tech.kakao.com/feed/" },
+  { "id": "naver-d2", "name": "네이버", "url": "https://d2.naver.com/d2.atom", "logo": "https://www.naver.com" },
+  { "id": "line-engineering", "name": "라인", "url": "https://engineering.linecorp.com/ko/feed/" },
+  { "id": "daangn", "name": "당근", "url": "https://medium.com/feed/daangn", "logo": "https://www.daangn.com" },
+  { "id": "coupang-engineering", "name": "쿠팡", "url": "https://medium.com/feed/coupang-engineering", "logo": "https://www.coupang.com" },
+  { "id": "banksalad-tech", "name": "뱅크샐러드", "url": "https://blog.banksalad.com/rss.xml" },
+  { "id": "musinsa-tech", "name": "무신사", "url": "https://medium.com/feed/musinsa-tech", "logo": "https://www.musinsa.com" },
+  { "id": "watcha-tech", "name": "왓챠", "url": "https://medium.com/feed/watcha", "logo": "https://watcha.com" },
+  { "id": "zigbang-tech", "name": "직방", "url": "https://medium.com/feed/zigbang", "logo": "https://www.zigbang.com" },
+  { "id": "socar-tech", "name": "쏘카", "url": "https://tech.socar.kr/rss.xml", "logo": "https://www.socar.kr" }
+]
