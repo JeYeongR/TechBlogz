@@ -35,9 +35,3 @@ export async function getFeedLastFetched(): Promise<Record<string, string>> {
 
   return Object.fromEntries((data ?? []).map((row) => [row.feed_id, row.last_fetched_at]));
 }
-
-export async function setArticleRead(id: string, isRead: boolean): Promise<void> {
-  const supabase = getSupabase();
-  const { error } = await supabase.from("articles").update({ is_read: isRead }).eq("id", id);
-  if (error) throw error;
-}

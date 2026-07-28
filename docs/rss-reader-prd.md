@@ -2,9 +2,9 @@
 
 ## 1. 배경 및 문제 정의
 
-현재 개발/AI 관련 아티클을 여러 소스에서 개별적으로 확인하고 있음:
+현재 개발/AI 관련 글을 여러 소스에서 개별적으로 확인하고 있음:
 
-- 단발성 아티클: Anthropic 블로그, Lilian Weng, applied-llms.org, hamel.dev
+- 단발성 글: Anthropic 블로그, Lilian Weng, applied-llms.org, hamel.dev
 - 정기 구독 소스: Simon Willison, 국내 기술 블로그(oliveyoung.tech, techblog.woowahan.com, toss.tech), GeekNews
 
 기존 무료 RSS 리더(Feedly, Inoreader)로 피드 수집 자체는 해결 가능하지만, "지금 관심 있는 주제와 관련된 글"을 우선적으로 골라주는 기능은 없음. 매번 전체 목록을 훑어야 하는 비효율이 있음.

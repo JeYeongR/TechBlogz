@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { ArticleCard } from "@/components/article-card";
 import { Button } from "@/components/ui/button";
-import { loadMoreArticles, toggleRead } from "@/app/actions";
+import { loadMoreArticles } from "@/app/actions";
 import { faviconUrl } from "@/lib/favicon";
 import type { Article, Feed } from "@/lib/types";
+
+const READ_IDS_KEY = "articlesift:read-ids";
 
 export function ArticleGrid({
   feeds,
@@ -24,12 +26,24 @@ export function ArticleGrid({
   const [selectedFeedId, setSelectedFeedId] = useState<string | undefined>(undefined);
   const [isPending, startTransition] = useTransition();
   const [isFilterPending, startFilterTransition] = useTransition();
+  const [readIds, setReadIds] = useState<Set<string>>(new Set());
+  const [justReadIds, setJustReadIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const stored = localStorage.getItem(READ_IDS_KEY);
+    // Sync from localStorage after mount so SSR and the first client render match (avoids hydration mismatch).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (stored) setReadIds(new Set(JSON.parse(stored)));
+  }, []);
 
   function handleRead(id: string) {
-    setArticles((prev) => prev.map((a) => (a.id === id ? { ...a, is_read: true } : a)));
-    startTransition(() => {
-      toggleRead(id, true);
+    setReadIds((prev) => {
+      if (prev.has(id)) return prev;
+      const next = new Set(prev).add(id);
+      localStorage.setItem(READ_IDS_KEY, JSON.stringify([...next]));
+      return next;
     });
+    setJustReadIds((prev) => new Set(prev).add(id));
   }
 
   function handleLoadMore() {
@@ -98,7 +112,14 @@ export function ArticleGrid({
           }
         >
           {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} layout={view} onRead={handleRead} />
+            <ArticleCard
+              key={article.id}
+              article={article}
+              layout={view}
+              isRead={readIds.has(article.id)}
+              animateRead={justReadIds.has(article.id)}
+              onRead={handleRead}
+            />
           ))}
         </div>
       )}
