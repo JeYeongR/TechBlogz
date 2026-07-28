@@ -12,12 +12,14 @@ export function HomeShell({
   feeds,
   initialArticles,
   initialHasMore,
+  initialReadIds,
 }: {
   title: string;
   lastCollectedAt: string | undefined;
   feeds: Feed[];
   initialArticles: Article[];
   initialHasMore: boolean;
+  initialReadIds: string[];
 }) {
   const [view, setView] = useState<FeedView>("list");
 
@@ -36,6 +38,7 @@ export function HomeShell({
         feeds={feeds}
         initialArticles={initialArticles}
         initialHasMore={initialHasMore}
+        initialReadIds={initialReadIds}
         view={view}
       />
     </div>

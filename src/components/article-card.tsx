@@ -9,13 +9,11 @@ export function ArticleCard({
   article,
   layout = "list",
   isRead,
-  animateRead = false,
   onRead,
 }: {
   article: Article;
   layout?: "list" | "grid";
   isRead: boolean;
-  animateRead?: boolean;
   onRead: (id: string) => void;
 }) {
   const isGrid = layout === "grid";
@@ -28,7 +26,7 @@ export function ArticleCard({
         (isGrid
           ? "flex flex-col gap-3 rounded-lg bg-card p-4 ring-1 ring-border"
           : "flex items-start gap-3 border-b py-3") +
-        (animateRead ? " transition-opacity" : "") +
+        " transition-opacity" +
         (isRead ? " opacity-50" : "")
       }
     >

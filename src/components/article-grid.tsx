@@ -1,23 +1,26 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { ArticleCard } from "@/components/article-card";
 import { Button } from "@/components/ui/button";
 import { loadMoreArticles } from "@/app/actions";
 import { faviconUrl } from "@/lib/favicon";
+import { READ_IDS_COOKIE } from "@/lib/read-ids";
 import type { Article, Feed } from "@/lib/types";
 
-const READ_IDS_KEY = "articlesift:read-ids";
+const READ_IDS_MAX_AGE = 60 * 60 * 24 * 365;
 
 export function ArticleGrid({
   feeds,
   initialArticles,
   initialHasMore,
+  initialReadIds,
   view = "list",
 }: {
   feeds: Feed[];
   initialArticles: Article[];
   initialHasMore: boolean;
+  initialReadIds: string[];
   view?: "list" | "grid";
 }) {
   const [articles, setArticles] = useState(initialArticles);
@@ -26,24 +29,17 @@ export function ArticleGrid({
   const [selectedFeedId, setSelectedFeedId] = useState<string | undefined>(undefined);
   const [isPending, startTransition] = useTransition();
   const [isFilterPending, startFilterTransition] = useTransition();
-  const [readIds, setReadIds] = useState<Set<string>>(new Set());
-  const [justReadIds, setJustReadIds] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    const stored = localStorage.getItem(READ_IDS_KEY);
-    // Sync from localStorage after mount so SSR and the first client render match (avoids hydration mismatch).
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (stored) setReadIds(new Set(JSON.parse(stored)));
-  }, []);
+  const [readIds, setReadIds] = useState<Set<string>>(() => new Set(initialReadIds));
 
   function handleRead(id: string) {
     setReadIds((prev) => {
       if (prev.has(id)) return prev;
       const next = new Set(prev).add(id);
-      localStorage.setItem(READ_IDS_KEY, JSON.stringify([...next]));
+      document.cookie = `${READ_IDS_COOKIE}=${encodeURIComponent(
+        JSON.stringify([...next])
+      )}; path=/; max-age=${READ_IDS_MAX_AGE}`;
       return next;
     });
-    setJustReadIds((prev) => new Set(prev).add(id));
   }
 
   function handleLoadMore() {
@@ -117,7 +113,6 @@ export function ArticleGrid({
               article={article}
               layout={view}
               isRead={readIds.has(article.id)}
-              animateRead={justReadIds.has(article.id)}
               onRead={handleRead}
             />
           ))}
