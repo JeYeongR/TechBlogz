@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { List, LayoutGrid, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -13,12 +12,6 @@ const ITEMS: { v: FeedView; icon: React.ReactNode; label: string }[] = [
 
 export function ViewToggle({ view, onChange }: { view: FeedView; onChange: (v: FeedView) => void }) {
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- next-themes hydration-safe mount guard
-    setMounted(true);
-  }, []);
-  const dark = mounted && resolvedTheme === "dark";
 
   return (
     <div className="flex items-center gap-1.5">
@@ -41,12 +34,12 @@ export function ViewToggle({ view, onChange }: { view: FeedView; onChange: (v: F
       </div>
       <button
         type="button"
-        onClick={() => setTheme(dark ? "light" : "dark")}
-        title={dark ? "라이트 모드" : "다크 모드"}
+        onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
         aria-label="다크 모드 전환"
         className="flex size-9 items-center justify-center rounded-full border border-border bg-background text-muted-foreground"
       >
-        {mounted ? dark ? <Sun size={16} /> : <Moon size={16} /> : null}
+        <Sun size={16} className="hidden dark:block" />
+        <Moon size={16} className="block dark:hidden" />
       </button>
     </div>
   );
